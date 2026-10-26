@@ -1,56 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Professional Scientific Calculator with precision math parser, calculation history, memory registry, keyboard support, and dark/light themes.">
+    <meta name="theme-color" content="#121316">
+    <title>Athrav | Scientific Calculator</title>
+    <!-- Preconnect for crisp typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark">
 
-<div class="container">
-
-    <div class="top-bar">
-        <h2>Calculator</h2>
-        <button onclick="toggleTheme()">🌙</button>
-    </div>
-
-    <div class="calculator">
-        <div class="display" id="display">0</div>
-
-        <div class="buttons">
-            <button onclick="clearDisplay()">AC</button>
-            <button onclick="deleteLast()">←</button>
-            <button onclick="append('%')">%</button>
-            <button class="operator" onclick="append('/')">÷</button>
-
-            <button onclick="append('7')">7</button>
-            <button onclick="append('8')">8</button>
-            <button onclick="append('9')">9</button>
-            <button class="operator" onclick="append('*')">×</button>
-
-            <button onclick="append('4')">4</button>
-            <button onclick="append('5')">5</button>
-            <button onclick="append('6')">6</button>
-            <button class="operator" onclick="append('-')">-</button>
-
-            <button onclick="append('1')">1</button>
-            <button onclick="append('2')">2</button>
-            <button onclick="append('3')">3</button>
-            <button class="operator" onclick="append('+')">+</button>
-
-            <button onclick="append('0')">0</button>
-            <button onclick="append('00')">00</button>
-            <button onclick="append('.')">.</button>
-            <button class="operator" onclick="calculate()">=</button>
+<div class="app-layout">
+    <header class="app-header">
+        <div class="brand">
+            <span class="brand-crest" aria-hidden="true">◆</span>
+            <div class="brand-text">
+                <h1 class="brand-title">ATHRAV</h1>
+                <span class="brand-subtitle">Scientific Instrument</span>
+            </div>
         </div>
-    </div>
 
-    <div class="history">
-        <h3>History</h3>
-        <ul id="historyList"></ul>
-    </div>
+        <nav class="header-controls" aria-label="Calculator controls">
+            <!-- Angle mode toggle -->
+            <button id="angleModeBtn" class="pill-btn mode-pill" aria-label="Angle mode: Degrees. Click to switch to Radians.">
+                <span class="pill-dot"></span>
+                <span id="angleModeText">DEG</span>
+            </button>
 
+            <!-- Scientific keypad toggle -->
+            <button id="toggleSciBtn" class="pill-btn sci-toggle-btn active" aria-label="Toggle scientific keypad" aria-expanded="true">
+                <svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                    <path d="M6 6h10"></path>
+                    <path d="M6 10h10"></path>
+                </svg>
+                <span class="btn-label">Sci</span>
+            </button>
+
+            <!-- History toggle -->
+            <button id="historyToggleBtn" class="icon-btn" aria-label="Open calculation history" title="Calculation History (H)">
+                <svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span id="historyBadge" class="badge" aria-label="0 items in history">0</span>
+            </button>
+
+            <!-- Theme toggle -->
+            <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle dark and light theme" title="Toggle Theme (T)">
+                <!-- Moon icon (active in dark mode) -->
+                <svg id="moonIcon" class="control-icon theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                </svg>
+                <!-- Sun icon (active in light mode) -->
+                <svg id="sunIcon" class="control-icon theme-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="calculator" id="calculator" role="region" aria-label="Scientific Calculator Interface">
+        <!-- Display Unit -->
+        <section class="calculator-display" aria-label="Display screen">
+            <div class="display-status-bar">
+                <div class="status-tags" aria-label="Active indicators">
+                    <span id="memIndicator" class="tag tag-mem hidden" title="Memory active">M</span>
+                    <span id="angleIndicator" class="tag tag-mode" title="Angle Mode">DEG</span>
+                    <span id="invIndicator" class="tag tag-inv hidden" title="2nd Inverse Mode Active">2ND</span>
+                </div>
+                <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
+            </div>
+
+            <!-- Expression line -->
+            <div class="expression-container" title="Click or tap to copy expression">
+                <div id="expressionDisplay" class="display-expression" tabindex="0" role="textbox" aria-readonly="true" aria-label="Mathematical expression"></div>
+            </div>
+
+            <!-- Primary Result line -->
+            <div class="result-container" title="Click or tap to copy result">
+                <div id="resultDisplay" class="display-result" tabindex="0" role="textbox" aria-readonly="true" aria-label="Calculation result">0</div>
+            </div>
+        </section>
+
+        <!-- Keypad System -->
+        <div class="keypad-container" id="keypadContainer">
+
+            <!-- Optional Scientific Keypad (toggleable) -->
+            <section class="keypad-panel scientific-panel" id="scientificPanel" aria-label="Scientific operations">
+                <div class="keypad-grid scientific-grid">
+                    <!-- Row 1: Modifier & Functions -->
+                    <button class="calc-btn btn-sci btn-toggle" id="btn2nd" aria-label="Toggle second function mode" data-action="toggle-2nd">
+                        <span>2<sup>nd</sup></span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnAngleQuick" aria-label="Toggle Deg/Rad" data-action="toggle-deg">
+                        <span id="btnAngleLabel">rad</span>
+                    </button>
+                    <button class="calc-btn btn-sci" aria-label="Open bracket" data-insert="(">(</button>
+                    <button class="calc-btn btn-sci" aria-label="Close bracket" data-insert=")">)</button>
+
+                    <!-- Row 2: Trigonometric & Root -->
+                    <button class="calc-btn btn-sci" id="btnSin" aria-label="Sine" data-insert="sin(">
+                        <span class="primary-label">sin</span>
+                        <span class="sub-label">sin⁻¹</span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnCos" aria-label="Cosine" data-insert="cos(">
+                        <span class="primary-label">cos</span>
+                        <span class="sub-label">cos⁻¹</span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnTan" aria-label="Tangent" data-insert="tan(">
+                        <span class="primary-label">tan</span>
+                        <span class="sub-label">tan⁻¹</span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnSqrt" aria-label="Square root" data-insert="√(">
+                        <span class="primary-label">√</span>
+                        <span class="sub-label">|x|</span>
+                    </button>
+
+                    <!-- Row 3: Logarithms & Powers -->
+                    <button class="calc-btn btn-sci" id="btnLn" aria-label="Natural logarithm" data-insert="ln(">
+                        <span class="primary-label">ln</span>
+                        <span class="sub-label">eˣ</span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnLog" aria-label="Common logarithm" data-insert="log(">
+                        <span class="primary-label">log</span>
+                        <span class="sub-label">10ˣ</span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnPower" aria-label="Power x to the y" data-insert="^">
+                        <span>x<sup>y</sup></span>
+                    </button>
+                    <button class="calc-btn btn-sci" id="btnSquare" aria-label="Square x squared" data-insert="²">
+                        <span>x<sup>2</sup></span>
+                    </button>
+
+                    <!-- Row 4: Constants & Advanced -->
+                    <button class="calc-btn btn-sci" aria-label="Pi constant" data-insert="π">π</button>
+                    <button class="calc-btn btn-sci" aria-label="Euler's constant e" data-insert="e">e</button>
+                    <button class="calc-btn btn-sci" aria-label="Factorial" data-insert="!">x!</button>
+                    <button class="calc-btn btn-sci" id="btnReciprocal" aria-label="Reciprocal 1 divided by x" data-action="reciprocal">
+                        <span>1/x</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Standard Keypad -->
+            <section class="keypad-panel standard-panel" aria-label="Standard calculator keypad">
+                <!-- Memory Row -->
+                <div class="memory-grid">
+                    <button class="calc-btn btn-mem" aria-label="Memory Clear" data-action="mem-clear">MC</button>
+                    <button class="calc-btn btn-mem" aria-label="Memory Recall" data-action="mem-recall">MR</button>
+                    <button class="calc-btn btn-mem" aria-label="Memory Add" data-action="mem-add">M+</button>
+                    <button class="calc-btn btn-mem" aria-label="Memory Subtract" data-action="mem-sub">M−</button>
+                </div>
+
+                <!-- Main Number & Operator Grid -->
+                <div class="keypad-grid standard-grid">
+                    <!-- Row 1 -->
+                    <button class="calc-btn btn-action btn-clear" aria-label="All Clear" data-action="clear">AC</button>
+                    <button class="calc-btn btn-action btn-delete" aria-label="Delete last character" data-action="delete" title="Backspace">⌫</button>
+                    <button class="calc-btn btn-op" aria-label="Percentage" data-insert="%">%</button>
+                    <button class="calc-btn btn-op" aria-label="Divide" data-insert="÷">÷</button>
+
+                    <!-- Row 2 -->
+                    <button class="calc-btn btn-num" aria-label="Seven" data-digit="7">7</button>
+                    <button class="calc-btn btn-num" aria-label="Eight" data-digit="8">8</button>
+                    <button class="calc-btn btn-num" aria-label="Nine" data-digit="9">9</button>
+                    <button class="calc-btn btn-op" aria-label="Multiply" data-insert="×">×</button>
+
+                    <!-- Row 3 -->
+                    <button class="calc-btn btn-num" aria-label="Four" data-digit="4">4</button>
+                    <button class="calc-btn btn-num" aria-label="Five" data-digit="5">5</button>
+                    <button class="calc-btn btn-num" aria-label="Six" data-digit="6">6</button>
+                    <button class="calc-btn btn-op" aria-label="Subtract" data-insert="−">−</button>
+
+                    <!-- Row 4 -->
+                    <button class="calc-btn btn-num" aria-label="One" data-digit="1">1</button>
+                    <button class="calc-btn btn-num" aria-label="Two" data-digit="2">2</button>
+                    <button class="calc-btn btn-num" aria-label="Three" data-digit="3">3</button>
+                    <button class="calc-btn btn-op" aria-label="Add" data-insert="+">+</button>
+
+                    <!-- Row 5 -->
+                    <button class="calc-btn btn-action" aria-label="Change sign positive or negative" data-action="sign">±</button>
+                    <button class="calc-btn btn-num" aria-label="Zero" data-digit="0">0</button>
+                    <button class="calc-btn btn-num" aria-label="Decimal point" data-action="decimal">.</button>
+                    <button class="calc-btn btn-equals" aria-label="Equals calculate" data-action="calculate">=</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Calculation History Drawer -->
+    <aside id="historyDrawer" class="history-drawer" aria-label="Calculation history panel" aria-hidden="true">
+        <div class="history-header">
+            <div class="history-heading">
+                <svg class="heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <h2>Calculation History</h2>
+            </div>
+            <div class="history-header-actions">
+                <button id="clearHistoryBtn" class="pill-btn danger-pill" aria-label="Clear all calculation history">Clear</button>
+                <button id="closeHistoryBtn" class="icon-btn close-btn" aria-label="Close history drawer">✕</button>
+            </div>
+        </div>
+
+        <div class="history-body">
+            <div id="historyEmpty" class="history-empty">
+                <div class="empty-icon-wrap" aria-hidden="true">◆</div>
+                <p class="empty-title">No calculations yet</p>
+                <p class="empty-desc">Your equations and results will be saved here automatically.</p>
+            </div>
+            <ul id="historyList" class="history-list" role="list" aria-label="List of past calculations"></ul>
+        </div>
+    </aside>
+
+    <!-- History Backdrop Overlay for Mobile -->
+    <div id="drawerOverlay" class="drawer-overlay" aria-hidden="true"></div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toastMessage" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
+
+    <!-- Refined Footer -->
+    <footer class="app-footer">
+        <p class="footer-tip">Keyboard shortcuts enabled &bull; Press <kbd>Enter</kbd> to calculate, <kbd>Esc</kbd> to clear, <kbd>H</kbd> for history</p>
+    </footer>
 </div>
 
 <script src="script.js"></script>

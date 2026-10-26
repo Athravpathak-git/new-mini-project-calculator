@@ -1,88 +1,1083 @@
-body {
+/* ==========================================================================
+   Athrav Scientific Calculator - Design System & Stylesheet
+   Palette: Deep Charcoal, Burgundy, Cream, and Restrained Rose-Gold Accents
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties (Theme Tokens)
+   -------------------------------------------------------------------------- */
+:root {
+    /* Fonts */
+    --font-serif: "Cinzel", "Times New Roman", serif;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", "SF Mono", Consolas, Menlo, monospace;
+
+    /* Transition timings */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Border Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 26px;
+    --radius-pill: 9999px;
+}
+
+/* Dark Theme (Default) */
+:root[data-theme="dark"],
+body.dark {
+    --bg-canvas: #121316;
+    --bg-gradient: radial-gradient(circle at 50% 10%, #1c1e24 0%, #121316 80%);
+
+    --surface-card: #191b22;
+    --surface-card-border: rgba(220, 180, 160, 0.1);
+    --surface-card-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.35);
+
+    --surface-display: #111216;
+    --surface-display-border: rgba(212, 163, 115, 0.14);
+    --surface-display-inner: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+
+    --text-primary: #faf6f0;       /* Rich warm cream */
+    --text-secondary: #c8c2b7;     /* Soft ivory */
+    --text-muted: #7d7770;         /* Restrained charcoal cream */
+    --text-accent: #d4a373;        /* Rose-gold */
+
+    /* Buttons: Numbers */
+    --btn-num-bg: #22252e;
+    --btn-num-hover: #2b2f3a;
+    --btn-num-active: #1c1e25;
+    --btn-num-color: #faf6f0;
+    --btn-num-border: rgba(255, 255, 255, 0.05);
+    --btn-num-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    /* Buttons: Operators */
+    --btn-op-bg: #351a24;          /* Charcoal with burgundy undertone */
+    --btn-op-hover: #482331;
+    --btn-op-active: #2a141c;
+    --btn-op-color: #f2cbbe;        /* Rose-gold text */
+    --btn-op-border: rgba(212, 163, 115, 0.2);
+    --btn-op-shadow: 0 4px 10px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(242, 203, 190, 0.1);
+
+    /* Buttons: Action (AC, DEL) */
+    --btn-action-bg: #611828;      /* Deep burgundy */
+    --btn-action-hover: #751e31;
+    --btn-action-active: #4d1320;
+    --btn-action-color: #ffffff;
+    --btn-action-border: rgba(255, 180, 190, 0.22);
+    --btn-action-shadow: 0 4px 12px rgba(97, 24, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    /* Buttons: Equals (=) */
+    --btn-eq-bg: linear-gradient(135deg, #c98b63, #b0724b); /* Brushed rose-gold */
+    --btn-eq-hover: linear-gradient(135deg, #d89c74, #bf815a);
+    --btn-eq-active: #9c623d;
+    --btn-eq-color: #1a120b;       /* Dark contrast text */
+    --btn-eq-border: rgba(255, 230, 200, 0.4);
+    --btn-eq-shadow: 0 6px 18px rgba(201, 139, 99, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+    /* Buttons: Scientific & Memory */
+    --btn-sci-bg: #1c1e26;
+    --btn-sci-hover: #262934;
+    --btn-sci-active: #16181e;
+    --btn-sci-color: #d8d2c8;
+    --btn-sci-border: rgba(255, 255, 255, 0.05);
+    --btn-sci-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+    --btn-mem-bg: #1e2027;
+    --btn-mem-hover: #272a33;
+    --btn-mem-color: #c4beb4;
+
+    /* Accent & Indicators */
+    --accent-rose-gold: #d4a373;
+    --accent-rose-gold-glow: rgba(212, 163, 115, 0.35);
+    --accent-burgundy: #7a2034;
+    --indicator-bg: rgba(212, 163, 115, 0.14);
+    --indicator-color: #d4a373;
+    --indicator-border: rgba(212, 163, 115, 0.28);
+
+    /* Focus & Highlights */
+    --focus-ring: 0 0 0 2px #d4a373;
+    --error-color: #e57373;
+    --error-bg: rgba(229, 115, 115, 0.12);
+    --success-color: #81c784;
+}
+
+/* Light Theme */
+:root[data-theme="light"],
+body.light {
+    --bg-canvas: #f6f1e9;          /* Warm cream marble */
+    --bg-gradient: radial-gradient(circle at 50% 10%, #ffffff 0%, #f6f1e9 85%);
+
+    --surface-card: #ffffff;
+    --surface-card-border: rgba(107, 29, 46, 0.1);
+    --surface-card-shadow: 0 20px 48px rgba(107, 29, 46, 0.08), 0 4px 14px rgba(0, 0, 0, 0.04);
+
+    --surface-display: #f8f4ed;
+    --surface-display-border: rgba(107, 29, 46, 0.12);
+    --surface-display-inner: inset 0 2px 6px rgba(107, 29, 46, 0.04);
+
+    --text-primary: #1e1e23;       /* Deep charcoal */
+    --text-secondary: #5a565d;     /* Muted charcoal */
+    --text-muted: #8d8892;
+    --text-accent: #b87a4c;        /* Burnished rose-gold */
+
+    /* Buttons: Numbers */
+    --btn-num-bg: #ffffff;
+    --btn-num-hover: #f7f3ec;
+    --btn-num-active: #ede6da;
+    --btn-num-color: #1e1e23;
+    --btn-num-border: rgba(0, 0, 0, 0.08);
+    --btn-num-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    /* Buttons: Operators */
+    --btn-op-bg: #faeee9;          /* Delicate blush cream */
+    --btn-op-hover: #f4dfd7;
+    --btn-op-active: #ead0c6;
+    --btn-op-color: #6e1c2e;        /* Deep burgundy text */
+    --btn-op-border: rgba(110, 28, 46, 0.16);
+    --btn-op-shadow: 0 2px 6px rgba(110, 28, 46, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    /* Buttons: Action (AC, DEL) */
+    --btn-action-bg: #751e31;      /* Refined rich burgundy */
+    --btn-action-hover: #88243a;
+    --btn-action-active: #5f1727;
+    --btn-action-color: #ffffff;
+    --btn-action-border: rgba(117, 30, 49, 0.25);
+    --btn-action-shadow: 0 4px 12px rgba(117, 30, 49, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+    /* Buttons: Equals (=) */
+    --btn-eq-bg: linear-gradient(135deg, #b87a4c, #9e6337); /* Warm rose-gold */
+    --btn-eq-hover: linear-gradient(135deg, #c7895b, #ac7043);
+    --btn-eq-active: #8b5329;
+    --btn-eq-color: #ffffff;
+    --btn-eq-border: rgba(184, 122, 76, 0.35);
+    --btn-eq-shadow: 0 6px 16px rgba(184, 122, 76, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+    /* Buttons: Scientific & Memory */
+    --btn-sci-bg: #eee7dc;
+    --btn-sci-hover: #e3dbcde0;
+    --btn-sci-active: #d6cdbe;
+    --btn-sci-color: #38343b;
+    --btn-sci-border: rgba(0, 0, 0, 0.06);
+    --btn-sci-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+
+    --btn-mem-bg: #f2ebe0;
+    --btn-mem-hover: #e7dfd3;
+    --btn-mem-color: #4f4b52;
+
+    /* Accent & Indicators */
+    --accent-rose-gold: #b87a4c;
+    --accent-rose-gold-glow: rgba(184, 122, 76, 0.25);
+    --accent-burgundy: #751e31;
+    --indicator-bg: rgba(117, 30, 49, 0.1);
+    --indicator-color: #751e31;
+    --indicator-border: rgba(117, 30, 49, 0.22);
+
+    /* Focus & Highlights */
+    --focus-ring: 0 0 0 2px #751e31;
+    --error-color: #c62828;
+    --error-bg: rgba(198, 40, 40, 0.1);
+    --success-color: #2e7d32;
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset & Global Styles
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
     margin: 0;
-    font-family: Arial;
-    transition: 0.3s;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.container {
-    max-width: 400px;
-    margin: auto;
-    padding: 10px;
+html, body {
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    background-color: var(--bg-canvas);
+    background-image: var(--bg-gradient);
+    color: var(--text-primary);
+    transition: background-color var(--transition-smooth), color var(--transition-smooth);
+    overflow-x: hidden;
 }
 
-.top-bar {
+body {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
 }
 
+/* Accessible hidden element utility */
+.hidden {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Application Shell & Header
+   -------------------------------------------------------------------------- */
+.app-layout {
+    width: 100%;
+    max-width: 860px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    transition: max-width var(--transition-smooth);
+}
+
+.app-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+
+.brand-crest {
+    color: var(--accent-rose-gold);
+    font-size: 1.25rem;
+    filter: drop-shadow(0 2px 6px var(--accent-rose-gold-glow));
+    transition: transform var(--transition-bounce);
+}
+
+.brand:hover .brand-crest {
+    transform: rotate(45deg) scale(1.1);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.brand-subtitle {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-accent);
+    font-weight: 500;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Header Buttons: Pills & Icons */
+.pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-card-border);
+    border-radius: var(--radius-pill);
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition-fast);
+}
+
+.pill-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-rose-gold);
+    transform: translateY(-1px);
+}
+
+.pill-btn:active {
+    transform: translateY(1px);
+}
+
+.pill-btn.active {
+    background: var(--accent-burgundy);
+    color: #ffffff;
+    border-color: var(--accent-rose-gold);
+}
+
+.mode-pill {
+    font-family: var(--font-mono);
+}
+
+.pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-rose-gold);
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-card-border);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-rose-gold);
+    transform: translateY(-1px);
+}
+
+.icon-btn:active {
+    transform: translateY(1px);
+}
+
+.control-icon {
+    width: 17px;
+    height: 17px;
+}
+
+.badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--accent-burgundy);
+    color: #ffffff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--surface-card);
+}
+
+/* --------------------------------------------------------------------------
+   4. Calculator Card
+   -------------------------------------------------------------------------- */
 .calculator {
-    background: black;
-    padding: 15px;
-    border-radius: 20px;
+    width: 100%;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-card-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--surface-card-shadow);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: background var(--transition-smooth), border var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 
-.display {
-    background: #111;
-    color: white;
-    font-size: 28px;
+/* --------------------------------------------------------------------------
+   5. Calculator Display
+   -------------------------------------------------------------------------- */
+.calculator-display {
+    background: var(--surface-display);
+    border: 1px solid var(--surface-display-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--surface-display-inner);
+    padding: 16px 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+}
+
+.display-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 22px;
+}
+
+.status-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    background: var(--indicator-bg);
+    color: var(--indicator-color);
+    border: 1px solid var(--indicator-border);
+}
+
+.status-message {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-accent);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.status-message.is-error {
+    color: var(--error-color);
+}
+
+.status-message.is-success {
+    color: var(--success-color);
+}
+
+/* Expression Line */
+.expression-container {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px 0;
+    cursor: pointer;
+}
+
+.expression-container::-webkit-scrollbar {
+    display: none;
+}
+
+.display-expression {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
     text-align: right;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+    min-height: 24px;
+    line-height: 1.4;
+    user-select: all;
+    outline: none;
 }
 
-.buttons {
+/* Primary Result Line */
+.result-container {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px 0;
+    cursor: pointer;
+}
+
+.result-container::-webkit-scrollbar {
+    display: none;
+}
+
+.display-result {
+    font-family: var(--font-mono);
+    font-size: 2.35rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: right;
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    user-select: all;
+    outline: none;
+    transition: font-size var(--transition-fast);
+}
+
+/* Scaled down font size for long result numbers */
+.display-result.size-medium {
+    font-size: 1.85rem;
+}
+
+.display-result.size-small {
+    font-size: 1.45rem;
+}
+
+/* --------------------------------------------------------------------------
+   6. Keypad Architecture & Responsive Grid
+   -------------------------------------------------------------------------- */
+.keypad-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+    transition: all var(--transition-smooth);
+}
+
+/* When side-by-side on wide screens (>= 800px) */
+@media (min-width: 800px) {
+    .keypad-container.with-scientific {
+        grid-template-columns: 1.05fr 1fr;
+    }
+}
+
+.keypad-panel {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
-button {
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    font-size: 18px;
-    background: #333;
-    color: white;
+/* Scientific Panel Collapsible Transition on Mobile */
+.scientific-panel {
+    transition: max-height var(--transition-smooth), opacity var(--transition-smooth), transform var(--transition-smooth);
+    overflow: hidden;
 }
 
-.operator {
-    background: orange;
-}
-
-.history {
-    margin-top: 15px;
-}
-
-.history ul {
-    max-height: 150px;
-    overflow-y: auto;
+.scientific-panel.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+    margin: 0;
     padding: 0;
+    transform: scaleY(0.95);
 }
 
-.history li {
+/* Memory Grid */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+/* Standard & Scientific Keypad Grids */
+.keypad-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.standard-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.scientific-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* --------------------------------------------------------------------------
+   7. Button Styling & Micro-interactions
+   -------------------------------------------------------------------------- */
+.calc-btn {
+    position: relative;
+    appearance: none;
+    border: none;
+    outline: none;
+    border-radius: var(--radius-md);
+    height: 52px;
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.calc-btn:hover {
+    transform: translateY(-1.5px);
+}
+
+.calc-btn:active {
+    transform: translateY(1px);
+}
+
+/* Accessible focus visible */
+.calc-btn:focus-visible,
+.pill-btn:focus-visible,
+.icon-btn:focus-visible,
+.display-expression:focus-visible,
+.display-result:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring) !important;
+}
+
+/* Button Variants */
+
+/* Number keys */
+.btn-num {
+    background: var(--btn-num-bg);
+    color: var(--btn-num-color);
+    border: 1px solid var(--btn-num-border);
+    box-shadow: var(--btn-num-shadow);
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.btn-num:hover {
+    background: var(--btn-num-hover);
+    border-color: rgba(212, 163, 115, 0.25);
+}
+
+.btn-num:active {
+    background: var(--btn-num-active);
+}
+
+/* Operators (+, -, ×, ÷, %) */
+.btn-op {
+    background: var(--btn-op-bg);
+    color: var(--btn-op-color);
+    border: 1px solid var(--btn-op-border);
+    box-shadow: var(--btn-op-shadow);
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.btn-op:hover {
+    background: var(--btn-op-hover);
+    border-color: var(--accent-rose-gold);
+}
+
+.btn-op:active {
+    background: var(--btn-op-active);
+}
+
+/* Action keys (AC, DEL) */
+.btn-action {
+    background: var(--btn-action-bg);
+    color: var(--btn-action-color);
+    border: 1px solid var(--btn-action-border);
+    box-shadow: var(--btn-action-shadow);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+}
+
+.btn-action:hover {
+    background: var(--btn-action-hover);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-action:active {
+    background: var(--btn-action-active);
+}
+
+/* Equals key (=) */
+.btn-equals {
+    background: var(--btn-eq-bg);
+    color: var(--btn-eq-color);
+    border: 1px solid var(--btn-eq-border);
+    box-shadow: var(--btn-eq-shadow);
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.btn-equals:hover {
+    background: var(--btn-eq-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(201, 139, 99, 0.45);
+}
+
+.btn-equals:active {
+    background: var(--btn-eq-active);
+    transform: translateY(1px);
+}
+
+/* Memory keys (MC, MR, M+, M-) */
+.btn-mem {
+    height: 38px;
+    background: var(--btn-mem-bg);
+    color: var(--btn-mem-color);
+    border: 1px solid var(--btn-sci-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.btn-mem:hover {
+    background: var(--btn-mem-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-rose-gold);
+}
+
+/* Scientific keys */
+.btn-sci {
+    background: var(--btn-sci-bg);
+    color: var(--btn-sci-color);
+    border: 1px solid var(--btn-sci-border);
+    box-shadow: var(--btn-sci-shadow);
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    font-weight: 500;
+    position: relative;
+    padding: 2px 4px;
+}
+
+.btn-sci:hover {
+    background: var(--btn-sci-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-rose-gold);
+}
+
+.btn-sci:active {
+    background: var(--btn-sci-active);
+}
+
+.btn-sci.active {
+    background: var(--accent-burgundy);
+    color: #ffffff;
+    border-color: var(--accent-rose-gold);
+}
+
+/* Sub-labels on 2nd trig keys */
+.primary-label {
+    line-height: 1;
+}
+
+.sub-label {
+    font-size: 0.62rem;
+    line-height: 1;
+    color: var(--text-accent);
+    opacity: 0.75;
+    margin-top: 2px;
+}
+
+.is-inverse .sub-label {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. Calculation History Drawer
+   -------------------------------------------------------------------------- */
+.history-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    max-width: 90vw;
+    height: 100vh;
+    background: var(--surface-card);
+    border-left: 1px solid var(--surface-card-border);
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform var(--transition-smooth);
+}
+
+.history-drawer.open {
+    transform: translateX(0);
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--surface-card-border);
+}
+
+.history-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.heading-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--accent-rose-gold);
+}
+
+.history-heading h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.history-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.danger-pill {
+    color: var(--error-color);
+}
+
+.danger-pill:hover {
+    border-color: var(--error-color);
+    background: var(--error-bg);
+}
+
+.close-btn {
+    font-size: 0.85rem;
+}
+
+.history-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-empty {
+    margin: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+}
+
+.empty-icon-wrap {
+    font-size: 1.5rem;
+    color: var(--accent-rose-gold);
+    opacity: 0.6;
+}
+
+.empty-title {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.empty-desc {
+    font-size: 0.82rem;
+    max-width: 200px;
+    line-height: 1.4;
+}
+
+.history-list {
     list-style: none;
-    padding: 5px;
-    border-bottom: 1px solid gray;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-
-.light {
-    background: #f4f4f4;
-    color: black;
+.history-item {
+    background: var(--surface-display);
+    border: 1px solid var(--surface-display-border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.light .calculator {
-    background: white;
+.history-item:hover {
+    border-color: var(--accent-rose-gold);
+    transform: translateY(-1px);
 }
 
-.light .display {
-    background: #ddd;
-    color: black;
+.history-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.light button {
-    background: #ccc;
-    color: black;
+.history-timestamp {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.history-delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast);
+}
+
+.history-delete-btn:hover {
+    color: var(--error-color);
+}
+
+.history-expr-btn {
+    background: none;
+    border: none;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    word-break: break-all;
+    line-height: 1.3;
+    padding: 0;
+    transition: color var(--transition-fast);
+}
+
+.history-expr-btn:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+}
+
+.history-result-btn {
+    background: none;
+    border: none;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--text-accent);
+    cursor: pointer;
+    word-break: break-all;
+    line-height: 1.2;
+    padding: 0;
+    transition: transform var(--transition-fast);
+}
+
+.history-result-btn:hover {
+    transform: translateX(-2px);
+}
+
+/* History Drawer Backdrop */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-smooth);
+}
+
+.drawer-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   9. Toast Notification
+   -------------------------------------------------------------------------- */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface-card);
+    border: 1px solid var(--accent-rose-gold);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1100;
+    transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   10. Footer Tip
+   -------------------------------------------------------------------------- */
+.app-footer {
+    width: 100%;
+    text-align: center;
+    padding: 6px 0;
+}
+
+.footer-tip {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+kbd {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-card-border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+    body {
+        padding: 12px 8px;
+    }
+
+    .calculator {
+        padding: 14px 12px;
+        border-radius: var(--radius-lg);
+    }
+
+    .calculator-display {
+        padding: 12px 14px;
+        min-height: 105px;
+    }
+
+    .display-result {
+        font-size: 2rem;
+    }
+
+    .calc-btn {
+        height: 48px;
+        font-size: 0.98rem;
+    }
+
+    .btn-num {
+        font-size: 1.15rem;
+    }
+
+    .btn-op {
+        font-size: 1.15rem;
+    }
+
+    .btn-mem {
+        height: 34px;
+        font-size: 0.72rem;
+    }
+
+    .btn-sci {
+        font-size: 0.84rem;
+    }
+
+    .history-drawer {
+        width: 100vw;
+        max-width: 100vw;
+    }
 }
